@@ -127,7 +127,7 @@ class HeroBanner extends StatelessWidget {
 
                   // Title (centered)
                   Text(
-                    'Ghatal Sharodutsav 2025',
+                    'Ghatal Sharodutsav 2026',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontSize: 24,
