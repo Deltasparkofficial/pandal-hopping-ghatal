@@ -10,8 +10,8 @@ const String supabaseProjectRef = 'oaegqwdpqmiulqatggkw';
 bool isSupabaseConnected = false;
 DateTime? lastSupabaseSync;
 
-String vercelUrl = 'https://pandal-hopping-ghatal-deltaspark.vercel.app';
-const String vercelProductionDomain = 'https://pandal-hopping-ghatal-deltaspark.vercel.app';
+String vercelUrl = 'https://ghatalpandalhopping.vercel.app';
+const String vercelProductionDomain = 'https://ghatalpandalhopping.vercel.app';
 bool isVercelLive = false;
 DateTime? lastVercelCheck;
 
@@ -145,6 +145,8 @@ void _saveSupabaseConfig() {
       'supabaseUrl': supabaseUrl,
       'projectRef': supabaseProjectRef,
       'supabaseAnonKey': supabaseAnonKey,
+      'appUrl': vercelUrl,
+      'siteUrl': vercelUrl,
       'autoSync': true,
       'lastSync': lastSupabaseSync?.toIso8601String(),
     }));
@@ -1304,7 +1306,7 @@ create policy "Anon update alerts" on public.alerts for all using (true);</div>
           • <b>Live Build Generated:</b> Flutter Web release bundle is compiled into <code>build/web</code> and configured with <code>vercel.json</code>.
         </p>
         <p style="margin-bottom: 6px;">
-          • <b>If 404 NOT_FOUND Appears:</b> The requested domain must match your project's assigned team URL (<code>pandal-hopping-ghatal-deltaspark.vercel.app</code>) or be registered under <b>Vercel Project → Settings → Domains</b>.
+          • <b>If 404 NOT_FOUND Appears:</b> The requested domain must match your project's assigned domain (<code>ghatalpandalhopping.vercel.app</code>) or be registered under <b>Vercel Project → Settings → Domains</b>.
         </p>
         <p style="margin-bottom: 6px;">
           • <b>If Login Prompt Appears:</b> Vercel has "Deployment Protection" enabled. Go to <b>Vercel Project → Settings → Deployment Protection</b> and set Standard Protection to <b>Disabled</b>.

@@ -28590,7 +28590,7 @@ _.a=null
 _.b=a
 _.d=b
 _.r="https://oaegqwdpqmiulqatggkw.supabase.co"
-_.w="https://pandal-hopping-ghatal-deltaspark.vercel.app"
+_.w="https://ghatalpandalhopping.vercel.app"
 _.x=!1
 _.y="Ready to verify"
 _.z=c
@@ -94309,7 +94309,7 @@ h=A.qG(i,i,i,i,i,i,i,i,i,B.ig,i,i,B.dl,i,i,B.oj,i,i,i,i)
 h=A.ac(A.b([o,B.W,A.bw(A.v7(B.r5,A.D("Copy URL",i,i,i,i,A.y().$1$fontSize(11),i,i),new A.an1(m,f,b),h),1)],s),B.n,B.h,B.k,0,i)
 m=A.a_(10)
 o=A.be(B.pA,1)
-m=A.dO(A.Qm(A.aU(A.b([q,B.bA,p,B.cN,k,B.bA,h,B.bA,A.a7(i,A.aU(A.b([A.D("\ud83d\udca1 Vercel Deployment Tips:",i,i,i,i,A.y().$3$color$fontSize$fontWeight(B.f,11,B.r),i,i),B.cM,A.D('\u2022 Production Web build (build/web & public) is bundled and synced.\n\u2022 If getting 404 NOT_FOUND: Ensure your domain (pandal-hopping-ghatal-deltaspark.vercel.app or custom alias) is registered under Vercel Project Settings \u2192 Domains.\n\u2022 If Vercel prompts "Login - Vercel": Set Project Settings \u2192 Deployment Protection to Disabled for public access.\n\u2022 Any git push to origin/main automatically triggers a live deployment on Vercel.',i,i,i,i,A.y().$3$color$fontSize$height(B.eA,10,1.4),i,i)],s),B.C,B.h,B.k),B.j,i,i,new A.a4(B.p6,i,o,m,i,i,B.p),i,i,i,B.lp,i,i,i)],s),B.C,B.h,B.a5),i),i,480)
+m=A.dO(A.Qm(A.aU(A.b([q,B.bA,p,B.cN,k,B.bA,h,B.bA,A.a7(i,A.aU(A.b([A.D("\ud83d\udca1 Vercel Deployment Tips:",i,i,i,i,A.y().$3$color$fontSize$fontWeight(B.f,11,B.r),i,i),B.cM,A.D('\u2022 Production Web build (build/web & public) is bundled and synced.\n\u2022 Active Production Domain: https://ghatalpandalhopping.vercel.app\n\u2022 If Vercel prompts "Login - Vercel": Set Project Settings \u2192 Deployment Protection to Disabled for public access.\n\u2022 Any git push to origin/main automatically triggers a live deployment on Vercel.',i,i,i,i,A.y().$3$color$fontSize$height(B.eA,10,1.4),i,i)],s),B.C,B.h,B.k),B.j,i,i,new A.a4(B.p6,i,o,m,i,i,B.p),i,i,i,B.lp,i,i,i)],s),B.C,B.h,B.a5),i),i,480)
 return A.Kj(A.b([A.o9(A.D("Close",i,i,i,i,A.y().$1$color(B.J),i,i),new A.an2(j.d),i)],s),B.GL,m,new A.bH(g,B.oj),r)},
 $S:121}
 A.amZ.prototype={
