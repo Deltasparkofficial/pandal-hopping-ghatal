@@ -10,8 +10,8 @@ const String supabaseProjectRef = 'oaegqwdpqmiulqatggkw';
 bool isSupabaseConnected = false;
 DateTime? lastSupabaseSync;
 
-String vercelUrl = 'https://ghatalpandalhopping-deltaspark.vercel.app';
-const String vercelProductionDomain = 'https://ghatalpandalhopping-deltaspark.vercel.app';
+String vercelUrl = 'https://pandal-hopping-ghatal-deltaspark.vercel.app';
+const String vercelProductionDomain = 'https://pandal-hopping-ghatal-deltaspark.vercel.app';
 bool isVercelLive = false;
 DateTime? lastVercelCheck;
 
