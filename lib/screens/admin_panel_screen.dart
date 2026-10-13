@@ -1314,7 +1314,7 @@ create policy "Public read alerts" on public.alerts for select using (true);''';
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '• Production Web build (build/web) has been generated and configured with vercel.json.\n• If Vercel displays "Login - Vercel", disable "Deployment Protection" in your Vercel Project Settings → Deployment Protection.\n• Pushing to GitHub (origin/main) will automatically trigger a live Vercel deployment.',
+                              '• Production Web build (build/web & public) is bundled and synced.\n• If getting 404 NOT_FOUND: Ensure your domain (ghatalpandalhopping-deltaspark.vercel.app or custom alias) is registered under Vercel Project Settings → Domains.\n• If Vercel prompts "Login - Vercel": Set Project Settings → Deployment Protection to Disabled for public access.\n• Any git push to origin/main automatically triggers a live deployment on Vercel.',
                               style: GoogleFonts.poppins(fontSize: 10, color: Colors.white60, height: 1.4),
                             ),
                           ],

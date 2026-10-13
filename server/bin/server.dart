@@ -176,18 +176,30 @@ Future<Map<String, dynamic>> _testVercelConnection([String? targetUrl]) async {
     final resp = await req.close();
     client.close();
 
-    isVercelLive = resp.statusCode >= 200 && resp.statusCode < 500;
+    final statusCode = resp.statusCode;
+    // Considered live if 200 OK or 302 redirect (protected/SSO)
+    isVercelLive = statusCode >= 200 && statusCode < 400;
     lastVercelCheck = DateTime.now();
     _saveVercelConfig();
+
+    String msg;
+    if (statusCode == 200) {
+      msg = 'Live Vercel website responding (200 OK)';
+    } else if (statusCode == 302) {
+      msg = 'Deployment Protected: Vercel Authentication (SSO) active. Turn off Deployment Protection in Vercel settings for public access.';
+    } else if (statusCode == 401) {
+      msg = 'Vercel Deployment Protection active (HTTP 401). Turn off Deployment Protection in Vercel settings.';
+    } else if (statusCode == 404) {
+      msg = '404 NOT_FOUND: Domain not mapped to project on Vercel. Ensure domain is added under Project Settings → Domains.';
+    } else {
+      msg = 'Vercel server responded with HTTP $statusCode';
+    }
+
     return {
       'live': isVercelLive,
-      'statusCode': resp.statusCode,
+      'statusCode': statusCode,
       'url': urlToTest,
-      'message': resp.statusCode == 200
-          ? 'Live Vercel website responding (200 OK)'
-          : (resp.statusCode == 401
-              ? 'Vercel Deployment Protection active (HTTP 401). Turn off Deployment Protection in Vercel settings for public access.'
-              : 'Vercel server responded with HTTP \${resp.statusCode}'),
+      'message': msg,
       'timestamp': DateTime.now().toIso8601String(),
     };
   } catch (e) {
@@ -1292,7 +1304,10 @@ create policy "Anon update alerts" on public.alerts for all using (true);</div>
           • <b>Live Build Generated:</b> Flutter Web release bundle is compiled into <code>build/web</code> and configured with <code>vercel.json</code>.
         </p>
         <p style="margin-bottom: 6px;">
-          • <b>If Login Prompt Appears:</b> Vercel may have "Deployment Protection" enabled on preview URLs. Go to <b>Vercel Project → Settings → Deployment Protection</b> and set Standard Protection to <b>Disabled</b> (or visit the public production domain).
+          • <b>If 404 NOT_FOUND Appears:</b> The requested domain must match your project's assigned team URL (<code>ghatalpandalhopping-deltaspark.vercel.app</code>) or be registered under <b>Vercel Project → Settings → Domains</b>.
+        </p>
+        <p style="margin-bottom: 6px;">
+          • <b>If Login Prompt Appears:</b> Vercel has "Deployment Protection" enabled. Go to <b>Vercel Project → Settings → Deployment Protection</b> and set Standard Protection to <b>Disabled</b>.
         </p>
         <p>
           • <b>Git Automatic Deployments:</b> Every commit pushed to <code>origin/main</code> automatically triggers a fresh deployment on Vercel.
