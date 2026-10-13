@@ -4,7 +4,7 @@
   "private": true,
   "description": "Ghatal Sharodutsav Live Crowd & Queue Tracker Web App",
   "scripts": {
-    "build": "node -e \"console.log('Deploying Flutter Web release bundle from build/web...')\"",
+    "build": "node -e \"const fs=require('fs'); if(fs.existsSync('build/web')) fs.cpSync('build/web', 'public', {recursive:true}); console.log('Deploying Flutter Web release bundle from public...');\"",
     "start": "dart run server/bin/server.dart"
   }
 }

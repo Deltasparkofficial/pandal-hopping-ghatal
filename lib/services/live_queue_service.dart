@@ -50,8 +50,8 @@ class LiveQueueService extends ChangeNotifier {
   static const String defaultSupabaseProjectRef = 'oaegqwdpqmiulqatggkw';
   String _supabaseUrl = defaultSupabaseUrl;
 
-  static const String defaultVercelUrl = 'https://ghatalpandalhopping-iizk7c8u9-deltaspark.vercel.app';
-  static const String defaultVercelProductionDomain = 'https://ghatalpandalhopping.vercel.app';
+  static const String defaultVercelUrl = 'https://ghatalpandalhopping-deltaspark.vercel.app';
+  static const String defaultVercelProductionDomain = 'https://ghatalpandalhopping-deltaspark.vercel.app';
   String _vercelUrl = defaultVercelUrl;
   bool _isVercelLive = false;
   String _vercelStatusMessage = 'Ready to verify';
