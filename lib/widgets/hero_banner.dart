@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
+import '../services/live_queue_service.dart';
 
 class HeroBanner extends StatelessWidget {
   const HeroBanner({super.key});
@@ -166,15 +167,7 @@ class HeroBanner extends StatelessWidget {
                         ),
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        _buildStat('OPEN NOW', '48', null),
-                        _buildStatDivider(),
-                        _buildStat('AVG CROWD', 'Moderate', null),
-                        _buildStatDivider(),
-                        _buildStat('TOTO & BOAT\nTRAILS', '6 Active', AppColors.goldLight),
-                      ],
-                    ),
+                    child: _LiveStatsRow(),
                   ),
                 ],
               ),
@@ -224,6 +217,28 @@ class HeroBanner extends StatelessWidget {
       ),
     );
   }
+}
+
+
+class _LiveStatsRow extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final queueService = LiveQueueService();
+    return ListenableBuilder(
+      listenable: queueService,
+      builder: (context, _) {
+        return Row(
+          children: [
+            _buildStat('OPEN NOW', '${queueService.pandals.length}', null),
+            _buildStatDivider(),
+            _buildStat('AVG CROWD', queueService.averageCrowdLabel, null),
+            _buildStatDivider(),
+            _buildStat('TOTO & BOAT\nTRAILS', '6 Active', AppColors.goldLight),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _buildStat(String label, String value, Color? valueColor) {
     return Expanded(
@@ -242,14 +257,18 @@ class HeroBanner extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 2),
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: 17,
-              fontWeight: FontWeight.w800,
-              color: valueColor ?? Colors.white,
-              height: 1.2,
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Text(
+              value,
+              key: ValueKey<String>(value),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 17,
+                fontWeight: FontWeight.w800,
+                color: valueColor ?? Colors.white,
+                height: 1.2,
+              ),
             ),
           ),
         ],

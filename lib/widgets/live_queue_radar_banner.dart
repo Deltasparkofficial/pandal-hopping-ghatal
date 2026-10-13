@@ -217,7 +217,7 @@ class _LiveQueueRadarBannerState extends State<LiveQueueRadarBanner>
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Across 5 major pandals in Ghatal municipality',
+                          'Across ${_queueService.pandals.length} major pandals in Ghatal municipality',
                           style: GoogleFonts.poppins(
                             fontSize: 10,
                             fontWeight: FontWeight.w400,

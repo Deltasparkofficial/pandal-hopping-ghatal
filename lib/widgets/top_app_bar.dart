@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../screens/admin_panel_screen.dart';
+import '../services/live_queue_service.dart';
+import 'notifications_sheet.dart';
 
 class TopAppBarWidget extends StatelessWidget {
   const TopAppBarWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final queueService = LiveQueueService();
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Row(
@@ -84,7 +88,55 @@ class TopAppBarWidget extends StatelessWidget {
           ),
           // Action icons
           _buildIconButton(Icons.search, onTap: () {}),
-          _buildIconButton(Icons.notifications_none_rounded, onTap: () {}),
+
+          // Notification bell with live alert count badge
+          ListenableBuilder(
+            listenable: queueService,
+            builder: (context, _) {
+              final alertCount = queueService.alerts.length;
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  _buildIconButton(
+                    Icons.notifications_none_rounded,
+                    onTap: () => NotificationsSheet.show(context),
+                  ),
+                  if (alertCount > 0)
+                    Positioned(
+                      top: 2,
+                      right: 2,
+                      child: Container(
+                        width: 16,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: AppColors.live,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.live.withValues(alpha: 0.4),
+                              blurRadius: 4,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            alertCount > 9 ? '9+' : '$alertCount',
+                            style: GoogleFonts.poppins(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              height: 1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
           const SizedBox(width: 4),
           // Profile / Admin avatar
           GestureDetector(

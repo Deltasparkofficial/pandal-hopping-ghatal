@@ -45,10 +45,26 @@ class LiveQueueService extends ChangeNotifier {
   bool _isLiveStreaming = true;
   DateTime _lastHeartbeat = DateTime.now();
   bool _isBackendConnected = false;
+  bool _isSupabaseConnected = false;
+  static const String defaultSupabaseUrl = 'https://oaegqwdpqmiulqatggkw.supabase.co';
+  static const String defaultSupabaseProjectRef = 'oaegqwdpqmiulqatggkw';
+  String _supabaseUrl = defaultSupabaseUrl;
+
+  static const String defaultVercelUrl = 'https://ghatalpandalhopping-iizk7c8u9-deltaspark.vercel.app';
+  static const String defaultVercelProductionDomain = 'https://ghatalpandalhopping.vercel.app';
+  String _vercelUrl = defaultVercelUrl;
+  bool _isVercelLive = false;
+  String _vercelStatusMessage = 'Ready to verify';
 
   bool get isLiveStreaming => _isLiveStreaming;
   DateTime get lastHeartbeat => _lastHeartbeat;
   bool get isBackendConnected => _isBackendConnected;
+  bool get isSupabaseConnected => _isSupabaseConnected;
+  String get supabaseUrl => _supabaseUrl;
+  String get supabaseProjectRef => defaultSupabaseProjectRef;
+  String get vercelUrl => _vercelUrl;
+  bool get isVercelLive => _isVercelLive;
+  String get vercelStatusMessage => _vercelStatusMessage;
 
   List<CrowdAlertItem> _alerts = [];
   List<CrowdAlertItem> get alerts => List.unmodifiable(_alerts);
@@ -266,8 +282,27 @@ class LiveQueueService extends ChangeNotifier {
     _timer = Timer.periodic(const Duration(seconds: 4), (_) {
       if (_isLiveStreaming) {
         _tickSimulation();
+        _pollBackendAlerts();
       }
     });
+  }
+
+  Future<void> _pollBackendAlerts() async {
+    try {
+      final aRes = await http.get(Uri.parse('$backendBaseUrl/api/alerts')).timeout(const Duration(seconds: 2));
+      if (aRes.statusCode == 200) {
+        final List<dynamic> list = jsonDecode(aRes.body);
+        final fetched = list.map((j) => CrowdAlertItem.fromJson(j as Map<String, dynamic>)).toList();
+        // Only update if data actually changed
+        if (fetched.length != _alerts.length ||
+            (fetched.isNotEmpty && _alerts.isNotEmpty && fetched.first.id != _alerts.first.id)) {
+          _alerts = fetched;
+          notifyListeners();
+        }
+      }
+    } catch (_) {
+      // Silent fail — alerts are non-critical
+    }
   }
 
   Future<void> _fetchBackendData() async {
@@ -286,6 +321,16 @@ class LiveQueueService extends ChangeNotifier {
         final List<dynamic> list = jsonDecode(aRes.body);
         _alerts = list.map((j) => CrowdAlertItem.fromJson(j as Map<String, dynamic>)).toList();
       }
+      try {
+        final sRes = await http.get(Uri.parse('$backendBaseUrl/api/supabase/config')).timeout(const Duration(seconds: 2));
+        if (sRes.statusCode == 200) {
+          final sData = jsonDecode(sRes.body) as Map<String, dynamic>;
+          _isSupabaseConnected = sData['connected'] == true;
+          if (sData['supabaseUrl'] != null) {
+            _supabaseUrl = sData['supabaseUrl'];
+          }
+        }
+      } catch (_) {}
       notifyListeners();
     } catch (_) {
       _isBackendConnected = false;
@@ -399,6 +444,33 @@ class LiveQueueService extends ChangeNotifier {
       return p;
     }).toList();
     notifyListeners();
+  }
+
+  /// Dismiss a single alert locally (user-side hide).
+  void dismissAlert(String alertId) {
+    _alerts.removeWhere((a) => a.id == alertId);
+    notifyListeners();
+  }
+
+  /// Delete an alert from backend and locally.
+  Future<void> deleteAlertFromBackend(String alertId) async {
+    _alerts.removeWhere((a) => a.id == alertId);
+    notifyListeners();
+    try {
+      await http.delete(
+        Uri.parse('$backendBaseUrl/api/alerts/$alertId'),
+      ).timeout(const Duration(seconds: 2));
+    } catch (_) {}
+  }
+
+  /// Computed: average crowd label across all pandals.
+  String get averageCrowdLabel {
+    if (_pandals.isEmpty) return 'N/A';
+    final avg = _pandals.fold(0, (sum, p) => sum + p.peopleInLine) ~/ _pandals.length;
+    if (avg < 45) return 'Low';
+    if (avg < 110) return 'Moderate';
+    if (avg < 180) return 'High';
+    return 'Peak';
   }
 
   // --- Admin API Methods ---
@@ -525,6 +597,118 @@ class LiveQueueService extends ChangeNotifier {
     } catch (_) {
       return null;
     }
+  }
+
+  Future<Map<String, dynamic>> testSupabase() async {
+    try {
+      final res = await http.get(Uri.parse('$backendBaseUrl/api/supabase/test')).timeout(const Duration(seconds: 3));
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        _isSupabaseConnected = data['connected'] == true;
+        notifyListeners();
+        return data;
+      }
+    } catch (_) {}
+    return {
+      'connected': false,
+      'supabaseUrl': _supabaseUrl,
+      'projectRef': defaultSupabaseProjectRef,
+    };
+  }
+
+  Future<Map<String, dynamic>> pushToSupabase() async {
+    try {
+      final res = await http.post(Uri.parse('$backendBaseUrl/api/supabase/sync-push')).timeout(const Duration(seconds: 4));
+      return jsonDecode(res.body) as Map<String, dynamic>;
+    } catch (e) {
+      return {'success': false, 'error': e.toString()};
+    }
+  }
+
+  Future<Map<String, dynamic>> pullFromSupabase() async {
+    try {
+      final res = await http.post(Uri.parse('$backendBaseUrl/api/supabase/sync-pull')).timeout(const Duration(seconds: 4));
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      if (data['success'] == true) {
+        await _fetchBackendData();
+      }
+      return data;
+    } catch (e) {
+      return {'success': false, 'error': e.toString()};
+    }
+  }
+
+  Future<bool> saveSupabaseConfig(String url, String anonKey) async {
+    try {
+      final res = await http.post(
+        Uri.parse('$backendBaseUrl/api/supabase/config'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'supabaseUrl': url, 'supabaseAnonKey': anonKey}),
+      ).timeout(const Duration(seconds: 3));
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        _isSupabaseConnected = data['connected'] == true;
+        _supabaseUrl = url;
+        notifyListeners();
+        return true;
+      }
+    } catch (_) {}
+    return false;
+  }
+
+  Future<Map<String, dynamic>> testVercelConnection([String? targetUrl]) async {
+    final urlToTest = targetUrl ?? _vercelUrl;
+    // 1. Try testing through local backend to prevent browser CORS restrictions
+    try {
+      final res = await http.get(
+        Uri.parse('$backendBaseUrl/api/vercel/test?url=${Uri.encodeComponent(urlToTest)}'),
+      ).timeout(const Duration(seconds: 4));
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        _isVercelLive = data['live'] == true;
+        _vercelStatusMessage = data['message'] ?? 'Online';
+        notifyListeners();
+        return data;
+      }
+    } catch (_) {}
+
+    // 2. Direct probe fallback
+    try {
+      final res = await http.get(Uri.parse(urlToTest)).timeout(const Duration(seconds: 5));
+      _isVercelLive = res.statusCode >= 200 && res.statusCode < 400;
+      _vercelStatusMessage = _isVercelLive
+          ? 'Live & Responding (${res.statusCode})'
+          : 'HTTP Status: ${res.statusCode}';
+      notifyListeners();
+      return {
+        'live': _isVercelLive,
+        'statusCode': res.statusCode,
+        'message': _vercelStatusMessage,
+        'url': urlToTest,
+      };
+    } catch (e) {
+      _isVercelLive = false;
+      _vercelStatusMessage = 'Error connecting: $e';
+      notifyListeners();
+      return {
+        'live': false,
+        'error': e.toString(),
+        'message': 'Failed to reach Vercel: $e',
+        'url': urlToTest,
+      };
+    }
+  }
+
+  void updateVercelUrl(String newUrl) {
+    if (newUrl.trim().isNotEmpty) {
+      _vercelUrl = newUrl.trim();
+      notifyListeners();
+    }
+  }
+
+  void stopTimer() {
+    _timer?.cancel();
+    _timer = null;
   }
 
   @override
