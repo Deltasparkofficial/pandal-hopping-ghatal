@@ -6,7 +6,6 @@ import '../widgets/live_queue_radar_banner.dart';
 import '../widgets/live_pandal_section.dart';
 import '../widgets/live_crowd_alerts_banner.dart';
 import '../widgets/new_pandal_registration_section.dart';
-import '../widgets/google_ad_section.dart';
 import '../widgets/app_footer.dart';
 import '../widgets/top_app_bar.dart';
 
@@ -74,14 +73,6 @@ class ExploreScreen extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.fromLTRB(16, 26, 16, 0),
               child: NewPandalRegistrationSection(),
-            ),
-          ),
-
-          // Google Ads Section
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
-              child: GoogleAdSection(),
             ),
           ),
 
