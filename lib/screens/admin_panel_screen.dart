@@ -1314,7 +1314,7 @@ create policy "Public read alerts" on public.alerts for select using (true);''';
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '• Production Web build (build/web & public) is bundled and synced.\n• Active Production Domain: https://ghatalpandalhopping.vercel.app\n• If Vercel prompts "Login - Vercel": Set Project Settings → Deployment Protection to Disabled for public access.\n• Any git push to origin/main automatically triggers a live deployment on Vercel.',
+                              '• Production Web build (build/web & public) is bundled and synced.\n• Active Production Domain: https://pandal-hopping-ghatal-deltaspark.vercel.app\n• If Vercel prompts "Login - Vercel": Set Project Settings → Deployment Protection to Disabled for public access.\n• Any git push to origin/main automatically triggers a live deployment on Vercel.',
                               style: GoogleFonts.poppins(fontSize: 10, color: Colors.white60, height: 1.4),
                             ),
                           ],

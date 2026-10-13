@@ -138,7 +138,7 @@ class NotificationsSheet extends StatelessWidget {
                       controller: scrollController,
                       padding: const EdgeInsets.all(16),
                       itemCount: alerts.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      separatorBuilder: (_, _) => const SizedBox(height: 10),
                       itemBuilder: (context, index) {
                         final alert = alerts[index];
                         return _buildAlertTile(context, alert, queueService);

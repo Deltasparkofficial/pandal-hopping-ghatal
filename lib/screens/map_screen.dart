@@ -1000,7 +1000,7 @@ class _MapScreenState extends State<MapScreen> {
                     try {
                       await launchUrl(mapsUri, mode: LaunchMode.externalApplication);
                     } catch (_) {
-                      if (context.mounted) {
+                      if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('Navigating from (${userLoc.lat.toStringAsFixed(4)}, ${userLoc.lng.toStringAsFixed(4)}) to ${pandal.name} ($distStr away)...'),
