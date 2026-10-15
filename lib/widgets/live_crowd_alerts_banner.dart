@@ -16,13 +16,16 @@ class LiveCrowdAlertsBanner extends StatelessWidget {
         final alerts = queueService.alerts;
         if (alerts.isEmpty) return const SizedBox.shrink();
 
-        return Column(
-          children: alerts.take(3).map((alert) {
-            return _AlertBannerCard(
-              alert: alert,
-              onDismiss: () => queueService.dismissAlert(alert.id),
-            );
-          }).toList(),
+        return RepaintBoundary(
+          child: Column(
+            children: alerts.take(3).map((alert) {
+              return _AlertBannerCard(
+                key: ValueKey(alert.id),
+                alert: alert,
+                onDismiss: () => queueService.dismissAlert(alert.id),
+              );
+            }).toList(),
+          ),
         );
       },
     );
@@ -33,7 +36,7 @@ class _AlertBannerCard extends StatelessWidget {
   final CrowdAlertItem alert;
   final VoidCallback onDismiss;
 
-  const _AlertBannerCard({required this.alert, required this.onDismiss});
+  const _AlertBannerCard({super.key, required this.alert, required this.onDismiss});
 
   @override
   Widget build(BuildContext context) {

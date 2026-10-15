@@ -79,21 +79,22 @@ class NewPandalRegistrationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF2C0B0B),
-            Color(0xFF1B0707),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        border: Border.all(
-          color: AppColors.gold.withValues(alpha: 0.35),
-          width: 1.5,
-        ),
+    return RepaintBoundary(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xFF2C0B0B),
+              Color(0xFF1B0707),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          border: Border.all(
+            color: AppColors.gold.withValues(alpha: 0.35),
+            width: 1.5,
+          ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.2),
@@ -203,23 +204,61 @@ class NewPandalRegistrationSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  // 3 Feature Highlights
-                  _buildFeatureBadge(
-                    icon: Icons.sensors_rounded,
-                    title: 'Live Line Radar',
-                    desc: 'Devotees track wait times live',
-                  ),
-                  const SizedBox(height: 8),
-                  _buildFeatureBadge(
-                    icon: Icons.location_on_rounded,
-                    title: 'Ghatal Map Navigation',
-                    desc: 'Direct GPS routing to your gate',
-                  ),
-                  const SizedBox(height: 8),
-                  _buildFeatureBadge(
-                    icon: Icons.campaign_rounded,
-                    title: 'Live Broadcasts',
-                    desc: 'Send crowd updates to devotees',
+                  // 3 Feature Highlights (Responsive)
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isWide = constraints.maxWidth >= 640;
+                      if (isWide) {
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: _buildFeatureBadge(
+                                icon: Icons.sensors_rounded,
+                                title: 'Live Line Radar',
+                                desc: 'Devotees track wait times live',
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: _buildFeatureBadge(
+                                icon: Icons.location_on_rounded,
+                                title: 'Ghatal Map Navigation',
+                                desc: 'Direct GPS routing to your gate',
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: _buildFeatureBadge(
+                                icon: Icons.campaign_rounded,
+                                title: 'Live Broadcasts',
+                                desc: 'Send crowd updates to devotees',
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return Column(
+                        children: [
+                          _buildFeatureBadge(
+                            icon: Icons.sensors_rounded,
+                            title: 'Live Line Radar',
+                            desc: 'Devotees track wait times live',
+                          ),
+                          const SizedBox(height: 8),
+                          _buildFeatureBadge(
+                            icon: Icons.location_on_rounded,
+                            title: 'Ghatal Map Navigation',
+                            desc: 'Direct GPS routing to your gate',
+                          ),
+                          const SizedBox(height: 8),
+                          _buildFeatureBadge(
+                            icon: Icons.campaign_rounded,
+                            title: 'Live Broadcasts',
+                            desc: 'Send crowd updates to devotees',
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 18),
 
@@ -262,8 +301,9 @@ class NewPandalRegistrationSection extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildFeatureBadge({
     required IconData icon,

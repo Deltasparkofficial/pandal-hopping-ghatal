@@ -20,18 +20,21 @@ class _FilterChipsRowState extends State<FilterChipsRow> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 42,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: _chips.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          final chip = _chips[index];
-          final isSelected = _selectedIndex == index;
-          return _buildChip(chip, isSelected, index);
-        },
+    return RepaintBoundary(
+      child: SizedBox(
+        height: 42,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: _chips.length,
+          separatorBuilder: (_, _) => const SizedBox(width: 8),
+          itemBuilder: (context, index) {
+            final chip = _chips[index];
+            final isSelected = _selectedIndex == index;
+            return _buildChip(chip, isSelected, index);
+          },
+        ),
       ),
     );
   }

@@ -252,11 +252,16 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
       return true;
     }).toList();
 
+    final isWide = MediaQuery.sizeOf(context).width >= 680;
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1140),
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
           slivers: [
             // Top App Bar / Header
             SliverToBoxAdapter(
@@ -514,19 +519,39 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
               ),
             ),
 
-            // Restaurant Cards List
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final item = filtered[index];
-                    return _buildRestaurantCard(item);
-                  },
-                  childCount: filtered.length,
+            // Restaurant Cards List (Adaptive Grid on Tablet/PC)
+            if (isWide)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 540,
+                    mainAxisExtent: 320,
+                    crossAxisSpacing: 14,
+                    mainAxisSpacing: 14,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final item = filtered[index];
+                      return _buildRestaurantCard(item, isGrid: true);
+                    },
+                    childCount: filtered.length,
+                  ),
+                ),
+              )
+            else
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final item = filtered[index];
+                      return _buildRestaurantCard(item);
+                    },
+                    childCount: filtered.length,
+                  ),
                 ),
               ),
-            ),
             // Deltaspark Watermark Footer
             const SliverToBoxAdapter(
               child: AppFooter(),
@@ -534,12 +559,14 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  ),
+);
+}
 
-  Widget _buildRestaurantCard(RestaurantItem item) {
+  Widget _buildRestaurantCard(RestaurantItem item, {bool isGrid = false}) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
+      margin: EdgeInsets.only(bottom: isGrid ? 0 : 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),

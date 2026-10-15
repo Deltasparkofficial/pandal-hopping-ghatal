@@ -137,11 +137,40 @@ class _LivePandalSectionState extends State<LivePandalSection> {
             ),
             const SizedBox(height: 14),
 
-            // Live Pandal Cards
-            ...pandals.map((pandal) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _buildLivePandalCard(pandal),
-                )),
+            // Responsive Live Pandal Cards
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final isTwoColumn = constraints.maxWidth >= 640;
+                if (isTwoColumn) {
+                  final cardWidth = (constraints.maxWidth - 14) / 2;
+                  return Wrap(
+                    spacing: 14,
+                    runSpacing: 14,
+                    children: pandals.map((pandal) {
+                      return SizedBox(
+                        width: cardWidth,
+                        child: RepaintBoundary(
+                          key: ValueKey(pandal.id),
+                          child: _buildLivePandalCard(pandal),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                }
+
+                return Column(
+                  children: pandals
+                      .map((pandal) => Padding(
+                            key: ValueKey(pandal.id),
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: RepaintBoundary(
+                              child: _buildLivePandalCard(pandal),
+                            ),
+                          ))
+                      .toList(),
+                );
+              },
+            ),
           ],
         );
       },
@@ -280,7 +309,7 @@ class _LivePandalSectionState extends State<LivePandalSection> {
                     size: 18,
                     color: pandal.crowdColor,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   // Live count with animated counter
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
@@ -298,12 +327,15 @@ class _LivePandalSectionState extends State<LivePandalSection> {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  Text(
-                    'people in line',
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                  Flexible(
+                    child: Text(
+                      'in line',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const SizedBox(width: 6),
@@ -349,7 +381,7 @@ class _LivePandalSectionState extends State<LivePandalSection> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Line Radar',
+                        'Radar',
                         style: GoogleFonts.poppins(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
@@ -381,27 +413,28 @@ class _LivePandalSectionState extends State<LivePandalSection> {
             ),
             const SizedBox(height: 10),
 
-            // Bottom row: stats (Crowd, Wait, Flow Speed)
-            Row(
+            // Bottom stats & gate status (Crowd, Wait, Flow Speed)
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.spaceBetween,
               children: [
                 _buildStatChip(
                   'Crowd',
                   pandal.crowdLabel,
                   pandal.crowdColor,
                 ),
-                const SizedBox(width: 6),
                 _buildStatChip(
                   'Wait',
                   '~${pandal.estimatedWaitMinutes}m',
                   AppColors.textPrimary,
                 ),
-                const SizedBox(width: 6),
                 _buildStatChip(
                   'Flow',
                   '~${pandal.entryRatePerMinute}/m',
                   const Color(0xFF1565C0),
                 ),
-                const Spacer(),
                 // Gate status chip
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -410,6 +443,7 @@ class _LivePandalSectionState extends State<LivePandalSection> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
                         width: 6,
@@ -501,25 +535,27 @@ class _PulsingDotState extends State<_PulsingDot>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Container(
-          width: 9,
-          height: 9,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.live.withValues(alpha: _animation.value),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.live.withValues(alpha: _animation.value * 0.4),
-                blurRadius: 6,
-                spreadRadius: 1,
-              ),
-            ],
-          ),
-        );
-      },
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _animation,
+        builder: (context, child) {
+          return Container(
+            width: 9,
+            height: 9,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.live.withValues(alpha: _animation.value),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.live.withValues(alpha: _animation.value * 0.4),
+                  blurRadius: 6,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

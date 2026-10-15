@@ -160,9 +160,12 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
               ),
             ],
           ),
-          body: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1040),
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
               // Admin Session Active Banner
               Container(
                 margin: const EdgeInsets.only(bottom: 14),
@@ -622,9 +625,11 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
               const SizedBox(height: 24),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
+  },
+);
   }
 
   Widget _buildMetricCard({

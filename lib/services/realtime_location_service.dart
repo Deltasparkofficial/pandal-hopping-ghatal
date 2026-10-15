@@ -206,6 +206,11 @@ class RealTimeLocationService extends ChangeNotifier {
     return closest;
   }
 
+  void stopTimer() {
+    _locationTimer?.cancel();
+    _locationTimer = null;
+  }
+
   @override
   void dispose() {
     _locationTimer?.cancel();

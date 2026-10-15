@@ -24,11 +24,14 @@ class NotificationsSheet extends StatelessWidget {
       minChildSize: 0.35,
       maxChildSize: 0.85,
       builder: (context, scrollController) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFFFDFBF7),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFFDFBF7),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
           child: Column(
             children: [
               // Drag handle
@@ -149,9 +152,11 @@ class NotificationsSheet extends StatelessWidget {
               ),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
+  },
+);
   }
 
   Widget _buildAlertTile(

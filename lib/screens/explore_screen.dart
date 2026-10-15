@@ -5,87 +5,113 @@ import '../widgets/filter_chips_row.dart';
 import '../widgets/live_queue_radar_banner.dart';
 import '../widgets/live_pandal_section.dart';
 import '../widgets/live_crowd_alerts_banner.dart';
+import '../widgets/offline_zone_section.dart';
 import '../widgets/new_pandal_registration_section.dart';
 import '../widgets/app_footer.dart';
 import '../widgets/top_app_bar.dart';
 
-class ExploreScreen extends StatelessWidget {
+class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
 
   @override
+  State<ExploreScreen> createState() => _ExploreScreenState();
+}
+
+class _ExploreScreenState extends State<ExploreScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SafeArea(
-      child: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          // Top App Bar
-          const SliverToBoxAdapter(
-            child: TopAppBarWidget(),
-          ),
-
-          // Live Crowd Alerts from Admin Panel
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 4, 16, 0),
-              child: LiveCrowdAlertsBanner(),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1080),
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
             ),
-          ),
+            slivers: const [
+              // Top App Bar
+              SliverToBoxAdapter(
+                child: TopAppBarWidget(),
+              ),
 
-          // Hero Banner
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: HeroBanner(),
-            ),
-          ),
+              // Live Crowd Alerts from Admin Panel
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 4, 16, 0),
+                  child: LiveCrowdAlertsBanner(),
+                ),
+              ),
 
-          // Search Bar
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 20, 16, 12),
-              child: SearchBarWidget(),
-            ),
-          ),
+              // Hero Banner
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: HeroBanner(),
+                ),
+              ),
 
-          // Filter Chips
-          const SliverToBoxAdapter(
-            child: FilterChipsRow(),
-          ),
+              // Search Bar
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 20, 16, 12),
+                  child: SearchBarWidget(),
+                ),
+              ),
 
-          // Live Queue Radar Banner (Live People in Line Tracker)
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.only(top: 18),
-              child: LiveQueueRadarBanner(),
-            ),
-          ),
+              // Filter Chips
+              SliverToBoxAdapter(
+                child: FilterChipsRow(),
+              ),
 
-          // Live Pandal Hop with Real-time People in Line Counters
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 22, 16, 0),
-              child: LivePandalSection(),
-            ),
-          ),
+              // Live Queue Radar Banner (Live People in Line Tracker)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 18),
+                  child: LiveQueueRadarBanner(),
+                ),
+              ),
 
-          // New Pandal Registration Section (Official Google Form)
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 26, 16, 0),
-              child: NewPandalRegistrationSection(),
-            ),
-          ),
+              // Live Pandal Hop with Real-time People in Line Counters
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 22, 16, 0),
+                  child: LivePandalSection(),
+                ),
+              ),
 
-          // Deltaspark Footer Watermark
-          const SliverToBoxAdapter(
-            child: AppFooter(),
-          ),
+              // Offline Zone Maps Section
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  child: OfflineZoneSection(),
+                ),
+              ),
 
-          // Bottom spacing
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 16),
+              // New Pandal Registration Section (Official Google Form)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 26, 16, 0),
+                  child: NewPandalRegistrationSection(),
+                ),
+              ),
+
+              // Deltaspark Footer Watermark
+              SliverToBoxAdapter(
+                child: AppFooter(),
+              ),
+
+              // Bottom spacing
+              SliverToBoxAdapter(
+                child: SizedBox(height: 16),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

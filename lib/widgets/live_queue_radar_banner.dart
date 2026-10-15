@@ -44,62 +44,65 @@ class _LiveQueueRadarBannerState extends State<LiveQueueRadarBanner>
         final totalPeople = _queueService.totalPeopleInQueues;
         final fastest = _queueService.shortestLinePandal;
 
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [
-                Color(0xFF210808),
-                Color(0xFF381010),
-                Color(0xFF2E0909),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: AppColors.primary.withValues(alpha: 0.4),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.15),
-                blurRadius: 14,
-                offset: const Offset(0, 4),
+        return RepaintBoundary(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFF210808),
+                  Color(0xFF381010),
+                  Color(0xFF2E0909),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top row: Radar badge + Live Stream indicator + Refresh
-              Row(
-                children: [
-                  // Blinking radar beacon
-                  ScaleTransition(
-                    scale: _pulseAnimation,
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: AppColors.live.withValues(alpha: 0.25),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.live,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: AppColors.live,
-                          shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.4),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.15),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top row: Radar badge + Live Stream indicator + Refresh
+                Row(
+                  children: [
+                    // Blinking radar beacon isolated with RepaintBoundary
+                    RepaintBoundary(
+                      child: ScaleTransition(
+                        scale: _pulseAnimation,
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: AppColors.live.withValues(alpha: 0.25),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.live,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(
+                              color: AppColors.live,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
+                    const SizedBox(width: 8),
                   Text(
                     'LIVE QUEUE RADAR',
                     style: GoogleFonts.poppins(
@@ -301,8 +304,9 @@ class _LiveQueueRadarBannerState extends State<LiveQueueRadarBanner>
                 ),
             ],
           ),
-        );
-      },
-    );
+        ),
+      );
+    },
+  );
   }
 }

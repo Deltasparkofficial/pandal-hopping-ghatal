@@ -46,11 +46,14 @@ class _LiveQueueDetailSheetState extends State<LiveQueueDetailSheet>
           minChildSize: 0.5,
           maxChildSize: 0.95,
           builder: (context, scrollController) {
-            return Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFFDFBF7),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-              ),
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 720),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFDFBF7),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
               child: Column(
                 children: [
                   // Drag handle
@@ -206,11 +209,13 @@ class _LiveQueueDetailSheetState extends State<LiveQueueDetailSheet>
                   ),
                 ],
               ),
-            );
-          },
+            ),
+          ),
         );
       },
     );
+  },
+);
   }
 
   Widget _buildLiveHeroCounter(PandalQueueData pandal) {

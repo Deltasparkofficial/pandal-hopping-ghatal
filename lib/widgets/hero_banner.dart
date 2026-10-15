@@ -8,61 +8,39 @@ class HeroBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFFB71C1C),
-            Color(0xFFC62828),
-            Color(0xFFD32F2F),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFB71C1C).withValues(alpha: 0.35),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+    return RepaintBoundary(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xFFB71C1C),
+              Color(0xFFC62828),
+              Color(0xFFD32F2F),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // Left Floral Swirl Flourish
-            Positioned(
-              left: -10,
-              top: 8,
-              bottom: 8,
-              child: Opacity(
-                opacity: 0.50,
-                child: Image.asset(
-                  'assets/images/floral_swirl.png',
-                  fit: BoxFit.contain,
-                  errorBuilder: (ctx, err, st) {
-                    return Image.network(
-                      'floral_swirl.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (c, e, s) => const SizedBox(),
-                    );
-                  },
-                ),
-              ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFB71C1C).withValues(alpha: 0.35),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
             ),
-
-            // Right Floral Swirl Flourish (Mirrored)
-            Positioned(
-              right: -10,
-              top: 8,
-              bottom: 8,
-              child: Opacity(
-                opacity: 0.50,
-                child: Transform.flip(
-                  flipX: true,
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Left Floral Swirl Flourish
+              Positioned(
+                left: -10,
+                top: 8,
+                bottom: 8,
+                child: Opacity(
+                  opacity: 0.50,
                   child: Image.asset(
                     'assets/images/floral_swirl.png',
                     fit: BoxFit.contain,
@@ -76,21 +54,38 @@ class HeroBanner extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
 
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Countdown badge (centered)
-                  _buildCountdownBadge(),
-                  const SizedBox(height: 12),
+              // Right Floral Swirl Flourish (Mirrored)
+              Positioned(
+                right: -10,
+                top: 8,
+                bottom: 8,
+                child: Opacity(
+                  opacity: 0.50,
+                  child: Transform.flip(
+                    flipX: true,
+                    child: Image.asset(
+                      'assets/images/floral_swirl.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (ctx, err, st) {
+                        return Image.network(
+                          'floral_swirl.png',
+                          fit: BoxFit.contain,
+                          errorBuilder: (c, e, s) => const SizedBox(),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
 
-                  // Centered Maa Durga Traditional Artwork
-                  Container(
-                    width: 124,
-                    height: 172,
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final isWide = constraints.maxWidth >= 640;
+
+                  final durgaArtwork = Container(
+                    width: isWide ? 144 : 124,
+                    height: isWide ? 200 : 172,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(
@@ -123,56 +118,118 @@ class HeroBanner extends StatelessWidget {
                         },
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 14),
+                  );
 
-                  // Title (centered)
-                  Text(
-                    'Ghatal Sharodutsav 2026',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      letterSpacing: 0.3,
-                      height: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-
-                  // Subtitle (centered)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      'Experience historic heritage Pujas across Shilabati River banks, Kushpata, Konnagar, and Kharar.',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha: 0.9),
-                        height: 1.4,
+                  if (isWide) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          durgaArtwork,
+                          const SizedBox(width: 24),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildCountdownBadge(),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Ghatal Sharodutsav 2026',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                    letterSpacing: 0.3,
+                                    height: 1.2,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Experience historic heritage Pujas across Shilabati River banks, Kushpata, Konnagar, and Kharar.',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    height: 1.4,
+                                  ),
+                                ),
+                                const SizedBox(height: 14),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      top: BorderSide(
+                                        color: Colors.white.withValues(alpha: 0.2),
+                                        width: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  child: _LiveStatsRow(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                    );
+                  }
 
-                  // Stats Row
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          width: 1,
+                  // Mobile vertical stack
+                  return Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _buildCountdownBadge(),
+                        const SizedBox(height: 12),
+                        durgaArtwork,
+                        const SizedBox(height: 14),
+                        Text(
+                          'Ghatal Sharodutsav 2026',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            letterSpacing: 0.3,
+                            height: 1.2,
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 6),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            'Experience historic heritage Pujas across Shilabati River banks, Kushpata, Konnagar, and Kharar.',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white.withValues(alpha: 0.9),
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                          child: _LiveStatsRow(),
+                        ),
+                      ],
                     ),
-                    child: _LiveStatsRow(),
-                  ),
-                ],
+                  );
+                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

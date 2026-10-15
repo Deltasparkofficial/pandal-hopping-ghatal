@@ -58,6 +58,7 @@ class _MapScreenState extends State<MapScreen> {
         );
 
         final userLoc = _locationService.currentLocation;
+        final isWide = MediaQuery.sizeOf(context).width >= 720;
 
         return Scaffold(
           backgroundColor: const Color(0xFF16191F),
@@ -74,8 +75,11 @@ class _MapScreenState extends State<MapScreen> {
                 left: 0,
                 right: 0,
                 child: SafeArea(
-                  child: Column(
-                    children: [
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 860),
+                      child: Column(
+                        children: [
                       // Header Card
                       Container(
                         margin: const EdgeInsets.fromLTRB(16, 8, 16, 6),
@@ -234,97 +238,101 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ),
               ),
-
-              // 3. Map Controls (Zoom / GPS Recenter / Walk Sim)
-              Positioned(
-                right: 16,
-                top: 210,
-                child: Column(
-                  children: [
-                    _buildMapFloatingBtn(Icons.add, () {
-                      setState(() => _zoomLevel = (_zoomLevel + 0.15).clamp(0.8, 1.8));
-                    }),
-                    const SizedBox(height: 8),
-                    _buildMapFloatingBtn(Icons.remove, () {
-                      setState(() => _zoomLevel = (_zoomLevel - 0.15).clamp(0.8, 1.8));
-                    }),
-                    const SizedBox(height: 8),
-                    // Live GPS Recenter
-                    _buildMapFloatingBtn(
-                      Icons.my_location_rounded,
-                      () {
-                        _locationService.recenterToGhatalBazar();
-                        setState(() {
-                          _zoomLevel = 1.1;
-                          _selectedZone = 'All Zones';
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Row(
-                              children: [
-                                const Icon(Icons.gps_fixed_rounded, color: Color(0xFF00E5FF), size: 18),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Locked to your live GPS position in Ghatal (${userLoc.lat.toStringAsFixed(4)}, ${userLoc.lng.toStringAsFixed(4)})',
-                                ),
-                              ],
-                            ),
-                            duration: const Duration(seconds: 2),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      },
-                      highlightColor: const Color(0xFF00E5FF),
-                    ),
-                    const SizedBox(height: 8),
-                    // Walking Simulation Toggle
-                    _buildMapFloatingBtn(
-                      _locationService.isWalkingSimulationActive
-                          ? Icons.directions_walk_rounded
-                          : Icons.pause_circle_filled_rounded,
-                      () {
-                        _locationService.toggleWalkingSimulation();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              _locationService.isWalkingSimulationActive
-                                  ? 'Walking Simulation Active — devotee moving along Ghatal Puja route'
-                                  : 'Walking Simulation Paused',
-                            ),
-                            duration: const Duration(seconds: 1),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      },
-                      highlightColor: _locationService.isWalkingSimulationActive
-                          ? const Color(0xFF00E5FF)
-                          : Colors.white54,
-                    ),
-                  ],
-                ),
-              ),
-
-              // 4. Live Admin Alert Ticker Overlay
-              if (_queueService.alerts.isNotEmpty)
-                Positioned(
-                  left: 16,
-                  right: 64,
-                  top: 215,
-                  child: _buildMapAlertTicker(),
-                ),
-
-              // 5. Bottom Selected Pandal Sheet
-              Positioned(
-                bottom: 16,
-                left: 16,
-                right: 16,
-                child: _buildBottomPandalCard(selectedPandal, userLoc),
-              ),
-            ],
+            ),
           ),
-        );
-      },
+
+          // 3. Map Controls (Zoom / GPS Recenter / Walk Sim)
+          Positioned(
+            right: 16,
+            top: 210,
+            child: Column(
+              children: [
+                _buildMapFloatingBtn(Icons.add, () {
+                  setState(() => _zoomLevel = (_zoomLevel + 0.15).clamp(0.8, 1.8));
+                }),
+                const SizedBox(height: 8),
+                _buildMapFloatingBtn(Icons.remove, () {
+                  setState(() => _zoomLevel = (_zoomLevel - 0.15).clamp(0.8, 1.8));
+                }),
+                const SizedBox(height: 8),
+                // Live GPS Recenter
+                _buildMapFloatingBtn(
+                  Icons.my_location_rounded,
+                  () {
+                    _locationService.recenterToGhatalBazar();
+                    setState(() {
+                      _zoomLevel = 1.1;
+                      _selectedZone = 'All Zones';
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            const Icon(Icons.gps_fixed_rounded, color: Color(0xFF00E5FF), size: 18),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Locked to your live GPS position in Ghatal (${userLoc.lat.toStringAsFixed(4)}, ${userLoc.lng.toStringAsFixed(4)})',
+                            ),
+                          ],
+                        ),
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                  highlightColor: const Color(0xFF00E5FF),
+                ),
+                const SizedBox(height: 8),
+                // Walking Simulation Toggle
+                _buildMapFloatingBtn(
+                  _locationService.isWalkingSimulationActive
+                      ? Icons.directions_walk_rounded
+                      : Icons.pause_circle_filled_rounded,
+                  () {
+                    _locationService.toggleWalkingSimulation();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          _locationService.isWalkingSimulationActive
+                              ? 'Walking Simulation Active — devotee moving along Ghatal Puja route'
+                              : 'Walking Simulation Paused',
+                        ),
+                        duration: const Duration(seconds: 1),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                  highlightColor: _locationService.isWalkingSimulationActive
+                      ? const Color(0xFF00E5FF)
+                      : Colors.white54,
+                ),
+              ],
+            ),
+          ),
+
+          // 4. Live Admin Alert Ticker Overlay
+          if (_queueService.alerts.isNotEmpty)
+            Positioned(
+              left: 16,
+              right: isWide ? null : 64,
+              width: isWide ? 460 : null,
+              top: 215,
+              child: _buildMapAlertTicker(),
+            ),
+
+          // 5. Bottom Selected Pandal Sheet
+          Positioned(
+            bottom: 16,
+            left: 16,
+            right: isWide ? null : 16,
+            width: isWide ? 460 : null,
+            child: _buildBottomPandalCard(selectedPandal, userLoc),
+          ),
+        ],
+      ),
     );
+  },
+);
   }
 
   Widget _buildRealTimeTrackerHud(PandalQueueData selectedPandal) {
@@ -869,12 +877,16 @@ class _MapScreenState extends State<MapScreen> {
                 children: [
                   const Icon(Icons.near_me_rounded, color: Color(0xFF00E5FF), size: 14),
                   const SizedBox(width: 6),
-                  Text(
-                    'PROXIMITY RADAR: You are near this pandal entrance!',
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFFE0F7FA),
+                  Expanded(
+                    child: Text(
+                      'PROXIMITY RADAR: You are near this pandal entrance!',
+                      style: GoogleFonts.poppins(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFE0F7FA),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
