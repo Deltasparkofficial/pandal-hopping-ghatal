@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../services/live_queue_service.dart';
+import 'festival_countdown_badge.dart';
 
 class HeroBanner extends StatelessWidget {
   const HeroBanner({super.key});
@@ -132,7 +133,7 @@ class HeroBanner extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _buildCountdownBadge(),
+                                const FestivalCountdownBadge(),
                                 const SizedBox(height: 10),
                                 Text(
                                   'Ghatal Sharodutsav 2026',
@@ -181,7 +182,7 @@ class HeroBanner extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        _buildCountdownBadge(),
+                        const FestivalCountdownBadge(),
                         const SizedBox(height: 12),
                         durgaArtwork,
                         const SizedBox(height: 14),
@@ -231,46 +232,6 @@ class HeroBanner extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildCountdownBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color(0xFF2E7D32),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF2E7D32).withValues(alpha: 0.4),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 7,
-            height: 7,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0xFF81C784),
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            'MAHA SAPTAMI IN 2 DAYS',
-            style: GoogleFonts.poppins(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              letterSpacing: 0.5,
-            ),
-          ),
-        ],
       ),
     );
   }

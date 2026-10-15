@@ -3,11 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pandal_hopping_ghatal/main.dart';
 import 'package:pandal_hopping_ghatal/services/live_queue_service.dart';
 import 'package:pandal_hopping_ghatal/services/realtime_location_service.dart';
+import 'package:pandal_hopping_ghatal/services/live_festival_service.dart';
 
 void main() {
   tearDown(() {
     LiveQueueService().stopTimer();
     RealTimeLocationService().stopTimer();
+    LiveFestivalService().stopTimer();
   });
 
   testWidgets('App loads and shows Pandal Hopping title',
@@ -15,6 +17,7 @@ void main() {
     await tester.pumpWidget(const PandalHoppingApp());
     expect(find.text('Pandal Hopping'), findsOneWidget);
     LiveQueueService().stopTimer();
+    LiveFestivalService().stopTimer();
   });
 
   testWidgets('ExploreScreen does not display any ads section',
@@ -24,6 +27,7 @@ void main() {
     expect(find.text('Google Ads • Sponsored Festival Partner'), findsNothing);
     expect(find.text('AdChoices'), findsNothing);
     LiveQueueService().stopTimer();
+    LiveFestivalService().stopTimer();
   });
 
   testWidgets('ExploreScreen renders all core home page widgets efficiently',
@@ -46,6 +50,7 @@ void main() {
     expect(find.text('Live Pandal Hop'), findsOneWidget);
 
     LiveQueueService().stopTimer();
+    LiveFestivalService().stopTimer();
   });
 
   testWidgets('ExploreScreen includes OfflineZoneSection with interactive download',
@@ -76,6 +81,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
 
     LiveQueueService().stopTimer();
+    LiveFestivalService().stopTimer();
   });
 
   testWidgets('HomeScreen uses IndexedStack and preserves explore state on tab switch',
@@ -97,6 +103,7 @@ void main() {
     expect(find.text('Pandal Hopping'), findsOneWidget);
     LiveQueueService().stopTimer();
     RealTimeLocationService().stopTimer();
+    LiveFestivalService().stopTimer();
   });
 }
 
